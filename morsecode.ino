@@ -3,16 +3,27 @@
 // Look at the chart to recognise the other messages: https://en.wikipedia.org/wiki/Morse_code
 String inputSentence = "SOS";
 int counter = 0;
+bool toggled = false;
+PulseManager pm{9,60};
 void setup() {
-  PulseManager pm{8, // PIN 8 has my red led through a 180 Ohm resistor
-  200 // dit length in milliseconds, this is a slow dit length
-  };
+  Serial.begin(4800);
+  while (!Serial && millis() < 5000) {
+    //wait for USB serial to connect or 5 seconds to elapse
+  }
+  Serial.println("Begin");
+  
   //pm.test();
   //pm.longPulse();
-  sendMessage(inputSentence, pm);
+  //sendMessage(inputSentence, pm);
 }
 
 // the loop routine runs over and over again forever:
 void loop() {
-
+  delay(100);
+  if(!toggled && analogRead(1)< 500){
+    toggled = true;
+    sendMessage(inputSentence, pm);
+    delay(2000);
+    toggled = false;
+  }
 }
